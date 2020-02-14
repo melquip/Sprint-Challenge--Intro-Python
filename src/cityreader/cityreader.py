@@ -6,6 +6,8 @@ class City:
     self.name = name
     self.lat = lat
     self.lon = lon
+  def __str__(self):
+    return f'{self.name}: ({self.lat},{self.lon})'
 
 # We have a collection of US cities with population over 750,000 stored in the
 # file "cities.csv". (CSV stands for "comma-separated values".)
@@ -32,7 +34,6 @@ def cityreader(cities=[]):
     data = csv.reader(csvfile, delimiter=',')
     for i, row in enumerate(data):
       if i == 0:
-        print(f'[{i}] {row}')
         headers = row
       else:
         # get city data
@@ -41,8 +42,7 @@ def cityreader(cities=[]):
           if header in allowedFields:
             rowSet[header] = row[h]
         # add city
-        print(f'[{i}] {rowSet}')
-        cities.append(City(rowSet['city'], rowSet['lat'], rowSet['lng']))
+        cities.append(City(rowSet['city'], float(rowSet['lat']), float(rowSet['lng'])))
 
   return cities
 
@@ -84,13 +84,38 @@ for c in cities:
 # TODO Get latitude and longitude values from the user
 
 def cityreader_stretch(lat1, lon1, lat2, lon2, cities=[]):
-  # within will hold the cities that fall within the specified region
-  within = []
-
   # TODO Ensure that the lat and lon valuse are all floats
   # Go through each city and check to see if it falls within 
   # the specified coordinates.
+  upperleft = None
+  lowerright = None
+  if lat1 < lat2:
+    if lon1 < lon2:
+      upperleft = (lat1, lon1)
+      lowerright = (lat2, lon2)
+    else: 
+      print('invalid coords')
+      return False
+  if lat1 > lat2:
+    if lon1 > lon2:
+      lowerright = (lat1, lon1)
+      upperleft = (lat2, lon2)
+    else:
+      print('invalid coords')
+      return False
+  
+   print('upperleft', upperleft)
+   print('lowerright', lowerright)
 
+  # within will hold the cities that fall within the specified region
+  within = []
+  for city in cities:
+    if city.lat >= upperleft[0] and city.lat <= lowerright[0]:
+      if city.lon >= upperleft[1] and city.lon <= lowerright[1]:
+        within.append(city)
+        
   return within
 
-print(cityreader_stretch(45, -100, 32, -120, cities))
+[print(city) for city in cityreader_stretch(32, -120, 45, -100, cities)]
+# print('switching coords should resolve to the same cities:')
+# [print(city) for city in cityreader_stretch(45, -100, 32, -120, cities)]
