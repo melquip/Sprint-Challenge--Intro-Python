@@ -104,8 +104,8 @@ def cityreader_stretch(lat1, lon1, lat2, lon2, cities=[]):
       print('invalid coords')
       return False
   
-   print('upperleft', upperleft)
-   print('lowerright', lowerright)
+  print('upperleft', upperleft)
+  print('lowerright', lowerright)
 
   # within will hold the cities that fall within the specified region
   within = []
